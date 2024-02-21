@@ -1,3 +1,40 @@
+# # Updated SynthesisManager.py
+
+# import nbformat
+# from nbformat.v4 import new_markdown_cell
+# from nbformat import write
+
+# class SynthesisManager:
+#     def __init__(self):
+#         self.sections = []
+#         self.resources = []
+
+#     def load_notebook(self, notebook_path):
+#         with open(notebook_path, 'r') as f:
+#             return nbformat.read(f, as_version=4)
+
+#     def save_notebook(self, notebook, notebook_path):
+#         with open(notebook_path, 'w') as f:
+#             write(notebook, f)
+
+#     def create_and_add_section_then_return_id(self, notebook_path, title, cell_number, content):
+#         section_id = len(self.sections) + 1
+#         self.sections.append({"id": section_id, "title": title})
+
+#         # Load the notebook
+#         notebook = self.load_notebook(notebook_path)
+
+#         # Create a new Markdown cell with the section content
+#         section_content = content #f"# Section {section_id}\n\nThis is the content of Section {section_id}."
+#         new_cell = new_markdown_cell(section_content)
+
+#         # Insert the new cell at the specified cell number
+#         notebook['cells'].insert(cell_number - 1, new_cell)
+
+#         # Save the modified notebook
+#         self.save_notebook(notebook, notebook_path)
+
+#         return section_id
 import nbformat
 from nbformat.v4 import new_markdown_cell, new_code_cell
 from nbformat import write
@@ -15,6 +52,9 @@ class SynthesisManager:
         with open(notebook_path, 'w') as f:
             write(notebook, f)
 
+    
+    
+    
     def create_and_add_section_then_return_id(self, notebook_path, title):
         section_id = len(self.sections) + 1
         self.sections.append({"id": section_id, "title": title})
@@ -129,6 +169,51 @@ class SynthesisManager:
                     cell.metadata['resource_id'] = resource_id_1
 
         # Save the modified notebook
+        self.save_notebook(notebook, notebook_path)
+        
+    def __init__(self):
+        self.sections = []
+        self.resources = []
+
+    def load_notebook(self, notebook_path):
+        with open(notebook_path, 'r') as f:
+            return nbformat.read(f, as_version=4)
+
+    def save_notebook(self, notebook, notebook_path):
+        with open(notebook_path, 'w') as f:
+            write(notebook, f)
+
+    def sync_sections_and_resources(self, notebook_path):
+        notebook = self.load_notebook(notebook_path)
+        self.sections = []
+        self.resources = []
+
+        for cell in notebook['cells']:
+            if cell['cell_type'] == 'markdown':
+                if cell['source'].startswith('# Section'):
+                    section_id = int(cell['source'].split()[1])
+                    section_title = cell['source'].split('\n')[1].strip()
+                    self.sections.append({"id": section_id, "title": section_title})
+                elif 'resource_id' in cell.metadata:
+                    resource_id = cell.metadata['resource_id']
+                    self.resources.append({"id": resource_id, "content": cell['source']})
+
+    def update_notebook_from_sections_and_resources(self, notebook_path):
+        notebook = self.load_notebook(notebook_path)
+
+        for cell in notebook['cells']:
+            if cell['cell_type'] == 'markdown':
+                if cell['source'].startswith('# Section'):
+                    section_id = int(cell['source'].split()[1])
+                    section_title = [section['title'] for section in self.sections if section['id'] == section_id]
+                    if section_title:
+                        cell['source'] = f"# Section {section_id}\n\n{section_title[0]}"
+                elif 'resource_id' in cell.metadata:
+                    resource_id = cell.metadata['resource_id']
+                    resource_content = [resource['content'] for resource in self.resources if resource['id'] == resource_id]
+                    if resource_content:
+                        cell['source'] = resource_content[0]
+
         self.save_notebook(notebook, notebook_path)
 
 # def load_notebook(self, notebook_path):
