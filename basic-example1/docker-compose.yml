@@ -39,6 +39,9 @@ services:
 volumes:
   jupyterhub-data:
 
+# networks:
+#   - jupyterhub-network
 networks:
   jupyterhub-network:
+    external: true
     name: jupyterhub-network

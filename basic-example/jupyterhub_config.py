@@ -8,12 +8,14 @@ import yaml
 # with open('/srv/jupyterhub/collaboration_config.yml', 'r') as f:
 #     project_config = yaml.safe_load(f)
 
+
 # JupyterHub Configuration
 c.JupyterHub.ip = '0.0.0.0'
 c.JupyterHub.port = 8000
 c.JupyterHub.hub_ip = public_ips()[0]
 c.JupyterHub.proxy_api_ip = public_ips()[0]
 c.JupyterHub.log_level = 'DEBUG'
+
 
 # Use DockerSpawner to spawn user servers in Docker containers
 c.JupyterHub.spawner_class = 'dockerspawner.DockerSpawner'

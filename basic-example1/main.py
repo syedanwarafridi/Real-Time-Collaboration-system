@@ -93,82 +93,35 @@
 #     main()
 
 
-# import time
-# import os.path
-# from syn import SynthesisManager
-
-# # if __name__ == "__main__":
-# #     notebook_path = "notebooks/Untitled.ipynb"
-
-# #     # Create an instance of SynthesisManager
-# #     manager = SynthesisManager()
-
-# #     # Initial synchronization
-# #     manager.sync_sections_and_resources(notebook_path)
-
-# #     while True:
-# #         # Get the last modification time of the notebook file
-# #         last_modified_time = os.path.getmtime(notebook_path)
-
-# #         # Check if the notebook file has been modified
-# #         if last_modified_time > manager.last_sync_time:
-# #             print("Notebook file has been modified. Synchronizing...")
-# #             # Synchronize sections and resources from the notebook
-# #             manager.sync_sections_and_resources(notebook_path)
-
-# #             # Print the current sections and resources
-# #             print("Sections:", manager.sections)
-# #             print("Resources:", manager.resources)
-
-# #             # Update the last sync time
-# #             manager.last_sync_time = last_modified_time
-
-# #         # Wait for a certain interval before checking again (e.g., every 5 seconds)
-# #         time.sleep(5)
-# # Create a Jupyter notebook
-# notebook_path = "notebooks/Untitled.ipynb"
-
-# # Instantiate a SynthesisManager object
-# manager = SynthesisManager()
-
-# # Create and add a section
-# section_id = manager.create_and_add_section_then_return_id(notebook_path, "Introduction")
-
-# # Add a resource
-# resource_id = manager.add_resource(notebook_path, "This is a resource")
-
-# # Edit the section title directly in the notebook
-# # (Simulate manual changes made in the Jupyter notebook UI)
-# # Open the notebook in Jupyter, modify the section title manually, then save the notebook
-
-# # Sync changes from the notebook to the SynthesisManager instance
-# manager.sync_notebook_changes(notebook_path)
-
-# # Verify that changes are reflected in the SynthesisManager instance
-# print(manager.sections)
-# print(manager.resources)
-
-from syn import SynthesisManager
 import time
+import os.path
+from syn import SynthesisManager
 
-def main():
+if __name__ == "__main__":
+    notebook_path = "notebooks/Untitled.ipynb"
+
     # Create an instance of SynthesisManager
     manager = SynthesisManager()
 
-    # Specify the path to your Jupyter notebook file
-    notebook_path = 'notebooks/Untitled.ipynb'
+    # Initial synchronization
+    manager.sync_sections_and_resources(notebook_path)
 
     while True:
-        # Sync changes from the notebook to SynthesisManager
-        manager.sync_notebook_changes(notebook_path)
+        # Get the last modification time of the notebook file
+        last_modified_time = os.path.getmtime(notebook_path)
 
-        # Detect and print changes in the notebook
-        manager.detect_notebook_changes(notebook_path)
+        # Check if the notebook file has been modified
+        if last_modified_time > manager.last_sync_time:
+            print("Notebook file has been modified. Synchronizing...")
+            # Synchronize sections and resources from the notebook
+            manager.sync_sections_and_resources(notebook_path)
 
-        # Wait for some time before checking again
-        time.sleep(3)  # Adjust the time interval as needed
+            # Print the current sections and resources
+            print("Sections:", manager.sections)
+            print("Resources:", manager.resources)
 
-if __name__ == "__main__":
-    main()
+            # Update the last sync time
+            manager.last_sync_time = last_modified_time
 
-
+        # Wait for a certain interval before checking again (e.g., every 5 seconds)
+        time.sleep(5)
